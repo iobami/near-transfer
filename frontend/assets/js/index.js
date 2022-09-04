@@ -1,6 +1,5 @@
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import 'regenerator-runtime/runtime'
-import { initContract, login, logout, donate,
+import { initContract, login, logout, donate, transfer,
          getBeneficiary, latestDonations, getTransactionResult } from './near/utils'
 
 // On submit, get the greeting and send it to the contract
@@ -112,4 +111,21 @@ window.set_donation = async function(amount){
   const amount_in_near = amount / near2usd
   const rounded_two_decimals = Math.round(amount_in_near * 100) / 100
   document.querySelector('#donation').value = rounded_two_decimals
+}
+
+window.sendTest = async function() {
+  const amountInUsd = 200;
+  
+  try {
+    let data = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=near&vs_currencies=usd").then(response => response.json())
+    const near2usd = data['near']['usd'];
+
+    const amount_in_near = amountInUsd / near2usd;
+    const rounded_two_decimals = Math.round(amount_in_near * 100) / 100;
+
+    // sends NEAR tokens
+    await transfer('bam-bam.testnet', rounded_two_decimals);
+  } catch (error) {
+    console.log(error);
+  }
 }

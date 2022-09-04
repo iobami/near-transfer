@@ -2,18 +2,20 @@ import { NearContract, NearBindgen, near, call, view, UnorderedMap, Vector } fro
 import { assert, make_private } from './utils'
 import { Donation, STORAGE_COST } from './model'
 
+const BENEFICIARY = 'iobami.testnet';
+
 @NearBindgen
 class DonationContract extends NearContract {
     beneficiary: string;
     donations: UnorderedMap;
 
-    constructor({ beneficiary = "v1.faucet.nonofficial.testnet" }:{beneficiary:string}) {
+    constructor({ beneficiary = BENEFICIARY }:{beneficiary:string}) {
         super()
         this.beneficiary = beneficiary;
         this.donations = new UnorderedMap('map-uid-1');
     }
 
-    default() { return new DonationContract({beneficiary: "v1.faucet.nonofficial.testnet"}) }
+    default() { return new DonationContract({beneficiary: BENEFICIARY}) }
 
     @call
     donate() {
@@ -49,6 +51,14 @@ class DonationContract extends NearContract {
     change_beneficiary(beneficiary) {
         make_private();
         this.beneficiary = beneficiary;
+    }
+
+    @call
+    transfer({ to, amount }: { to: string, amount: BigInt }) {
+        let promise = near.promiseBatchCreate(to)
+        near.promiseBatchActionTransfer(promise, amount)
+
+        return 'Success :)';
     }
 
     @view

@@ -1,6 +1,6 @@
 import { keyStores } from 'near-api-js'
 
-const CONTRACT_NAME = process.env.CONTRACT_NAME ||'new-awesome-project'
+const CONTRACT_NAME = process.env.CONTRACT_NAME || 'iobami.testnet';
 
 function getConfig(env) {
   switch (env) {

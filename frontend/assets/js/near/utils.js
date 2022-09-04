@@ -17,7 +17,7 @@ export async function initContract() {
     nearConfig.contractName, // contract's account
     {
       viewMethods: ['get_beneficiary', 'get_donations', 'total_donations'],
-      changeMethods: ['donate'],
+      changeMethods: ['donate', 'transfer'],
     }
   )
 }
@@ -50,7 +50,6 @@ export async function latestDonations() {
   const min = total_donations > 10 ? total_donations - 9 : 0
 
   let donations = await window.contract.get_donations({ from_index: min.toString(), limit: total_donations })
-  console.log(donations)
   return donations
 }
 
@@ -60,4 +59,16 @@ export async function donate(amount) {
     args: {}, amount: amount
   })
   return response
+}
+
+export async function transfer(to, nearTokenAmount) {
+  amount = utils.format.parseNearAmount(nearTokenAmount.toString());
+  
+  let response = await window.contract.transfer({ to, amount });
+
+  console.log(amount, ' nearTokenAmount bigInt');
+  console.log(nearTokenAmount, ' nearTokenAmount');
+  console.log(response, ' ::response');
+
+  return response;
 }
